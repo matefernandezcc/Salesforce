@@ -1,12 +1,17 @@
 /**
- * SPA Router - history.pushState based
+ * SPA Router - history.pushState based (GitHub Pages compatible)
  * Changes the browser URL on section navigation so that:
  *   - GTM can track distinct pageviews via dataLayer push
  *   - Salesforce Data360 SDK can match distinct pageTypes in the sitemap
  *   - Browser back/forward buttons work correctly
+ *   - Works with GitHub Pages 404.html redirect trick
  */
 (function () {
   'use strict';
+
+  // ─── GitHub Pages base path ───────────────────────────────────
+  // e.g. for matefernandezcc.github.io/Salesforce/ → basePath = '/Salesforce'
+  var BASE_PATH = '/Salesforce';
 
   // Route → section mapping
   var ROUTES = {
@@ -50,32 +55,27 @@
 
   var currentRoute = null;
 
-  /**
-   * Get the base path (handles GitHub Pages or subdirectory deploys)
-   */
-  function getBasePath() {
-    // If deployed under a subdirectory (e.g. /Salesforce/), detect it
-    var base = document.querySelector('base');
-    if (base) return base.getAttribute('href').replace(/\/$/, '');
-    // Fallback: detect from pathname - everything before the known routes
-    var path = window.location.pathname;
-    // Check if we're on a known route
-    var knownRoutes = Object.keys(ROUTES);
-    for (var i = 0; i < knownRoutes.length; i++) {
-      var route = knownRoutes[i];
-      if (route !== '/' && path.endsWith(route)) {
-        return path.slice(0, path.length - route.length);
+  // ─── GitHub Pages 404 redirect recovery ───────────────────────
+  // The 404.html redirects to index.html?p=about (for /Salesforce/about)
+  // We need to read that, restore the proper URL, and clean up
+  function recoverRedirectedRoute() {
+    var params = new URLSearchParams(window.location.search);
+    var redirectedPath = params.get('p');
+    if (redirectedPath) {
+      // Restore the clean URL
+      redirectedPath = '/' + redirectedPath.replace(/~and~/g, '&');
+      // Remove trailing slash
+      if (redirectedPath !== '/' && redirectedPath.endsWith('/')) {
+        redirectedPath = redirectedPath.slice(0, -1);
       }
+      // Clean URL: replace ?p=... with the actual path
+      var cleanUrl = window.location.protocol + '//' + window.location.host +
+        BASE_PATH + redirectedPath + window.location.hash;
+      window.history.replaceState(null, '', cleanUrl);
+      return redirectedPath;
     }
-    // If pathname ends with index.html, strip it
-    if (path.endsWith('/index.html')) {
-      return path.replace('/index.html', '');
-    }
-    // If path matches a directory-like structure, use it as base
-    return path.replace(/\/$/, '');
+    return null;
   }
-
-  var basePath = '';
 
   /**
    * Resolve the current route from the URL
@@ -83,13 +83,20 @@
   function getCurrentRouteFromURL() {
     var path = window.location.pathname;
     // Strip basePath
-    if (basePath && path.indexOf(basePath) === 0) {
-      path = path.slice(basePath.length);
+    if (BASE_PATH && path.indexOf(BASE_PATH) === 0) {
+      path = path.slice(BASE_PATH.length);
     }
     // Normalize
-    if (!path || path === '/index.html') path = '/';
+    if (!path || path === '/' || path === '/index.html') path = '/';
     if (path !== '/' && path.endsWith('/')) path = path.slice(0, -1);
     return ROUTES[path] ? path : '/';
+  }
+
+  /**
+   * Build a full URL path including the base
+   */
+  function buildFullPath(route) {
+    return BASE_PATH + (route === '/' ? '/' : route);
   }
 
   /**
@@ -109,25 +116,39 @@
 
     // Push state (only if it's a new route)
     if (pushState && route !== currentRoute) {
-      var fullPath = basePath + (route === '/' ? '/' : route);
-      window.history.pushState({ route: route }, title, fullPath);
+      window.history.pushState({ route: route }, title, buildFullPath(route));
     }
 
     currentRoute = route;
 
     // Update active nav link
-    document.querySelectorAll('.nav-link').forEach(function (link) {
-      link.classList.remove('active');
-      if (link.getAttribute('data-route') === route) {
-        link.classList.add('active');
+    document.querySelectorAll('[data-route]').forEach(function (link) {
+      if (link.classList.contains('nav-link') || link.closest('.flinks')) {
+        link.classList.remove('active');
+        if (link.getAttribute('data-route') === route) {
+          link.classList.add('active');
+        }
       }
     });
+
+    // Close Bootstrap mobile navbar if open
+    var navCollapse = document.getElementById('navmenu');
+    if (navCollapse && navCollapse.classList.contains('show')) {
+      var bsCollapse = bootstrap.Collapse.getInstance(navCollapse);
+      if (bsCollapse) {
+        bsCollapse.hide();
+      } else {
+        navCollapse.classList.remove('show');
+      }
+    }
 
     // Scroll to section
     var section = document.getElementById(sectionId);
     if (section) {
       var offset = route === '/' ? 0 : section.offsetTop - 78;
-      window.scrollTo({ top: offset, behavior: 'smooth' });
+      setTimeout(function () {
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }, 80);
     }
 
     // Push virtual pageview to GTM dataLayer
@@ -137,7 +158,7 @@
       page: {
         path: route,
         title: title,
-        url: window.location.origin + basePath + route
+        url: window.location.origin + buildFullPath(route)
       }
     });
 
@@ -147,7 +168,7 @@
         route: route,
         sectionId: sectionId,
         title: title,
-        url: window.location.origin + basePath + route
+        url: window.location.origin + buildFullPath(route)
       }
     }));
 
@@ -161,7 +182,7 @@
     var link = e.target.closest('[data-route]');
     if (!link) return;
 
-    // Don't intercept external links or special modifiers
+    // Don't intercept if modifier keys held (open in new tab, etc.)
     if (e.ctrlKey || e.metaKey || e.shiftKey) return;
 
     e.preventDefault();
@@ -186,11 +207,8 @@
    * Update route on scroll (keeps URL in sync with visible section)
    */
   var scrollTimeout;
-  var isNavigating = false;
 
   function updateRouteOnScroll() {
-    if (isNavigating) return;
-
     var sections = document.querySelectorAll('section[id]');
     var found = null;
 
@@ -208,14 +226,15 @@
         currentRoute = route;
         var title = TITLES[route] || 'Srappi';
         document.title = title;
-        var fullPath = basePath + (route === '/' ? '/' : route);
-        window.history.replaceState({ route: route }, title, fullPath);
+        window.history.replaceState({ route: route }, title, buildFullPath(route));
 
         // Update active nav link
-        document.querySelectorAll('.nav-link').forEach(function (link) {
-          link.classList.remove('active');
-          if (link.getAttribute('data-route') === route) {
-            link.classList.add('active');
+        document.querySelectorAll('[data-route]').forEach(function (link) {
+          if (link.classList.contains('nav-link') || link.closest('.flinks')) {
+            link.classList.remove('active');
+            if (link.getAttribute('data-route') === route) {
+              link.classList.add('active');
+            }
           }
         });
 
@@ -226,7 +245,7 @@
           page: {
             path: route,
             title: title,
-            url: window.location.origin + basePath + route
+            url: window.location.origin + buildFullPath(route)
           }
         });
 
@@ -236,7 +255,7 @@
             route: route,
             sectionId: found,
             title: title,
-            url: window.location.origin + basePath + route
+            url: window.location.origin + buildFullPath(route)
           }
         }));
 
@@ -251,39 +270,23 @@
   });
 
   /**
-   * Init: detect basePath, bind clicks, navigate to initial route
+   * Init
    */
   function init() {
-    // Detect basePath for subdirectory deploys
-    var path = window.location.pathname;
-    var knownRoutes = Object.keys(ROUTES).filter(function (r) { return r !== '/'; });
-    var foundRoute = false;
-    for (var i = 0; i < knownRoutes.length; i++) {
-      if (path.endsWith(knownRoutes[i])) {
-        basePath = path.slice(0, path.length - knownRoutes[i].length);
-        foundRoute = true;
-        break;
-      }
-    }
-    if (!foundRoute) {
-      // Check if it looks like a base path with index.html or trailing slash
-      basePath = path.replace(/\/index\.html$/, '').replace(/\/$/, '');
-      // If basePath is just '/', set it to empty
-      if (basePath === '') basePath = '';
-    }
+    // Check if we arrived from a 404 redirect
+    var recoveredRoute = recoverRedirectedRoute();
 
-    // Bind all route links
+    // Bind all route link clicks
     document.addEventListener('click', handleRouteClick);
 
     // Initial navigation
-    var initialRoute = getCurrentRouteFromURL();
+    var initialRoute = recoveredRoute || getCurrentRouteFromURL();
     navigateTo(initialRoute, false);
 
-    // Replace current history state
-    var fullPath = basePath + (initialRoute === '/' ? '/' : initialRoute);
-    window.history.replaceState({ route: initialRoute }, document.title, fullPath);
+    // Set initial history state
+    window.history.replaceState({ route: initialRoute }, document.title, buildFullPath(initialRoute));
 
-    console.log('[Router] Initialized | basePath:', basePath, '| route:', initialRoute);
+    console.log('[Router] Initialized | basePath:', BASE_PATH, '| route:', initialRoute);
   }
 
   // Run on DOM ready
