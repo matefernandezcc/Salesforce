@@ -62,7 +62,7 @@
          ============================================================ -->
       <nav class="navbar navbar-expand-lg" id="nav">
          <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/" data-route="/">
                <div class="blogo">
                   <div class="bico"><i class="fas fa-utensils"></i></div>
                   <div>
@@ -76,24 +76,24 @@
             </button>
             <div class="collapse navbar-collapse" id="navmenu">
                <ul class="navbar-nav mx-auto">
-                  <li class="nav-item"><a class="nav-link active" href="#hero">Home</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#chefs">Chefs</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#reservation">Reservation</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#testimonials">Reviews</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#contact-section">Contact</a></li>
-               </ul>
+                   <li class="nav-item"><a class="nav-link active" href="/" data-route="/" data-section="hero">Home</a></li>
+                   <li class="nav-item"><a class="nav-link" href="/about" data-route="/about" data-section="about">About</a></li>
+                   <li class="nav-item"><a class="nav-link" href="/menu" data-route="/menu" data-section="menu">Menu</a></li>
+                   <li class="nav-item"><a class="nav-link" href="/chefs" data-route="/chefs" data-section="chefs">Chefs</a></li>
+                   <li class="nav-item"><a class="nav-link" href="/reservation" data-route="/reservation" data-section="reservation">Reservation</a></li>
+                   <li class="nav-item"><a class="nav-link" href="/reviews" data-route="/reviews" data-section="testimonials">Reviews</a></li>
+                   <li class="nav-item"><a class="nav-link" href="/contact" data-route="/contact" data-section="contact-section">Contact</a></li>
+                </ul>
                <div class="d-flex align-items-center gap-1">
                   <!-- FIX 1: Search button -->
                   <button id="navSearchBtn" title="Search"><i class="fas fa-search"></i></button>
-                  <a href="#menu" class="nav-link nav-cta"><i class="fas fa-shopping-bag me-1"></i>Order Now</a>
+                   <a href="/menu" data-route="/menu" data-section="menu" class="nav-link nav-cta"><i class="fas fa-shopping-bag me-1"></i>Order Now</a>
                </div>
             </div>
          </div>
       </nav>
       <!-- ============================================================
-         FIX 1 � SEARCH OVERLAY POPUP
+         FIX 1  SEARCH OVERLAY POPUP
          ============================================================ -->
       <div id="searchOv">
          <button class="sovclose" id="searchClose"><i class="fas fa-times"></i></button>
@@ -155,7 +155,7 @@
                   <h1 class="htitle">Delicious <span class="hl">Fast Food</span><br/>for Every Moment</h1>
                   <p class="hdesc">Experience bold flavors crafted from premium ingredients. From crispy burgers to gourmet pizzas - every bite is an adventure worth savoring.</p>
                   <div class="d-flex flex-wrap gap-3 mb-2">
-                     <a href="#menu" class="btn-red"><i class="fas fa-utensils"></i>Explore Menu</a>
+                      <a href="/menu" data-route="/menu" data-section="menu" class="btn-red"><i class="fas fa-utensils"></i>Explore Menu</a>
                      <!-- FIX 2: Magnific popup video trigger -->
 					 <a href="https://www.youtube.com/watch?v=RXv_uIN6e-Y" class="magnific_popup btn-play popup-youtube">
 						<div class="pico"><i class="fas fa-play"></i></div>
@@ -307,13 +307,13 @@
                         </div>
                      </div>
                   </div>
-                  <a href="#menu" class="btn-red"><i class="fas fa-book-open"></i>View Full Menu</a>
+                   <a href="/menu" data-route="/menu" data-section="menu" class="btn-red"><i class="fas fa-book-open"></i>View Full Menu</a>
                </div>
             </div>
          </div>
       </section>
       <!-- ============================================================
-         MENU � FIX 3 (filter works) + FIX 4 (plus opens popup)
+         MENU  FIX 3 (filter works) + FIX 4 (plus opens popup)
          ============================================================ -->
       <section id="menu">
          <div class="container">
@@ -322,7 +322,7 @@
                <h2 class="stitle">Our Delicious <span>Menu</span></h2>
                <div class="sline"></div>
             </div>
-            <!-- FIX 3 � filter buttons -->
+            <!-- FIX 3  filter buttons -->
             <div class="text-center mb-4" data-aos="fade-up">
                <button class="filtbtn active" data-f="all">All</button>
                <button class="filtbtn" data-f="burgers">Burgers</button>
@@ -432,7 +432,7 @@
                      data-price="$10.99" data-old=""
                      data-rating="4.5" data-reviews="74"
                      data-cal="520" data-time="10"
-                     data-desc="Grilled chicken strips, saut�ed bell peppers and onions, sour cream, fresh guacamole and salsa wrapped in a warm flour tortilla with melted cheddar."
+                     data-desc="Grilled chicken strips, sauted bell peppers and onions, sour cream, fresh guacamole and salsa wrapped in a warm flour tortilla with melted cheddar."
                      data-tags="Grilled,Fresh,Mexican">
                      <div class="mimg">
                         <img src="img/menu/4.jpg" alt="Wrap"/>
@@ -514,13 +514,13 @@
                </div>
             </div>
             <!-- end #mgrid -->
-            <div class="text-center mt-5"><a href="#" class="btn-red"><i class="fas fa-th-large"></i>View Full Menu</a></div>
+            <div class="text-center mt-5"><a href="/menu" data-route="/menu" data-section="menu" class="btn-red"><i class="fas fa-th-large"></i>View Full Menu</a></div>
          </div>
       </section>
 	  
 	  
       <!-- ============================================================
-         FIX 4 � MENU DETAIL POPUP MODAL
+         FIX 4  MENU DETAIL POPUP MODAL
          ============================================================ -->
       <div id="menuPop">
          <div class="mpbox">
@@ -558,7 +558,7 @@
                      <div class="cditem"><span class="cdnum" id="cdM">45</span><span class="cdlbl">Minutes</span></div>
                      <div class="cditem"><span class="cdnum" id="cdS">30</span><span class="cdlbl">Seconds</span></div>
                   </div>
-                  <a href="#menu" class="btn-red"><i class="fas fa-shopping-cart"></i>Grab the Deal</a>
+                   <a href="/menu" data-route="/menu" data-section="menu" class="btn-red"><i class="fas fa-shopping-cart"></i>Grab the Deal</a>
                </div>
                <div class="col-lg-6" data-aos="fade-left">
                   <div class="spimgw">
@@ -573,7 +573,7 @@
 	  
 	  
       <!-- ============================================================
-         GALLERY � FIX 7 (click opens detail popup)
+         GALLERY  FIX 7 (click opens detail popup)
          ============================================================ -->
       <section id="gallery">
          <div class="container">
@@ -626,7 +626,7 @@
             </div>
          </div>
       </section>
-      <!-- FIX 7 � GALLERY POPUP -->
+      <!-- FIX 7  GALLERY POPUP -->
       <div id="galPop">
          <div class="gpbox">
             <button class="gpclose" id="gpClose"><i class="fas fa-times"></i></button>
@@ -644,7 +644,7 @@
 	  
 	  
       <!-- ============================================================
-         HISTORY � FIX 8 (alternating left/right text)
+         HISTORY  FIX 8 (alternating left/right text)
          ============================================================ -->
       <section id="history">
          <div class="container">
@@ -844,7 +844,7 @@
                      <i class="fas fa-truck-fast fa-2x mb-3" style="color:rgba(255,255,255,.8);"></i>
                      <h4>Order Online</h4>
                      <p>Get hot food delivered in 25 minutes</p>
-                     <a href="#menu" class="btnw">Order Now ?</a>
+                      <a href="/menu" data-route="/menu" data-section="menu" class="btnw">Order Now ?</a>
                   </div>
                </div>
                <div class="col-lg-4" data-aos="fade-left">
@@ -1086,7 +1086,7 @@
       </section>
 	  
       <!-- ============================================================
-         FIX 6 � CONTACT FORM
+         FIX 6  CONTACT FORM
          ============================================================ -->
       <section id="contact-section">
          <div class="container">
@@ -1172,24 +1172,24 @@
                <div class="col-sm-6 col-lg-2">
                   <div class="ftit">Quick Links</div>
                   <ul class="flinks ps-0">
-                     <li><a href="#hero"><i class="fas fa-chevron-right"></i>Home</a></li>
-                     <li><a href="#about"><i class="fas fa-chevron-right"></i>About Us</a></li>
-                     <li><a href="#menu"><i class="fas fa-chevron-right"></i>Our Menu</a></li>
-                     <li><a href="#reservation"><i class="fas fa-chevron-right"></i>Reservation</a></li>
-                     <li><a href="#blog"><i class="fas fa-chevron-right"></i>Blog</a></li>
-                     <li><a href="#contact-section"><i class="fas fa-chevron-right"></i>Contact</a></li>
-                  </ul>
+                      <li><a href="/" data-route="/" data-section="hero"><i class="fas fa-chevron-right"></i>Home</a></li>
+                      <li><a href="/about" data-route="/about" data-section="about"><i class="fas fa-chevron-right"></i>About Us</a></li>
+                      <li><a href="/menu" data-route="/menu" data-section="menu"><i class="fas fa-chevron-right"></i>Our Menu</a></li>
+                      <li><a href="/reservation" data-route="/reservation" data-section="reservation"><i class="fas fa-chevron-right"></i>Reservation</a></li>
+                      <li><a href="/blog" data-route="/blog" data-section="blog"><i class="fas fa-chevron-right"></i>Blog</a></li>
+                      <li><a href="/contact" data-route="/contact" data-section="contact-section"><i class="fas fa-chevron-right"></i>Contact</a></li>
+                   </ul>
                </div>
                <div class="col-sm-6 col-lg-2">
                   <div class="ftit">Our Menu</div>
                   <ul class="flinks ps-0">
-                     <li><a href="#menu"><i class="fas fa-chevron-right"></i>Burgers</a></li>
-                     <li><a href="#menu"><i class="fas fa-chevron-right"></i>Pizza</a></li>
-                     <li><a href="#menu"><i class="fas fa-chevron-right"></i>Fried Chicken</a></li>
-                     <li><a href="#menu"><i class="fas fa-chevron-right"></i>Wraps &amp; Rolls</a></li>
-                     <li><a href="#menu"><i class="fas fa-chevron-right"></i>Pasta</a></li>
-                     <li><a href="#menu"><i class="fas fa-chevron-right"></i>Desserts</a></li>
-                  </ul>
+                      <li><a href="/menu" data-route="/menu" data-section="menu"><i class="fas fa-chevron-right"></i>Burgers</a></li>
+                      <li><a href="/menu" data-route="/menu" data-section="menu"><i class="fas fa-chevron-right"></i>Pizza</a></li>
+                      <li><a href="/menu" data-route="/menu" data-section="menu"><i class="fas fa-chevron-right"></i>Fried Chicken</a></li>
+                      <li><a href="/menu" data-route="/menu" data-section="menu"><i class="fas fa-chevron-right"></i>Wraps &amp; Rolls</a></li>
+                      <li><a href="/menu" data-route="/menu" data-section="menu"><i class="fas fa-chevron-right"></i>Pasta</a></li>
+                      <li><a href="/menu" data-route="/menu" data-section="menu"><i class="fas fa-chevron-right"></i>Desserts</a></li>
+                   </ul>
                </div>
                <div class="col-lg-4">
                   <div class="ftit">Get In Touch</div>
@@ -1238,5 +1238,7 @@
       <script src="js/jquery.magnific-popup.min.js"></script>
       <!-- Main js -->
       <script src="js/main.js"></script>
+      <!-- SPA Router: pushState-based routing for distinct URLs per section -->
+      <script src="js/router.js"></script>
    </body>
 </html>

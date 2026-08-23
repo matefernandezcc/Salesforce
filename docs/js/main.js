@@ -8,21 +8,14 @@ AOS.init({
 window.addEventListener('scroll', function() {
     document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
     document.getElementById('btt').classList.toggle('show', window.scrollY > 300);
-    document.querySelectorAll('section[id]').forEach(function(sec) {
-        var top = sec.offsetTop - 110,
-            bot = top + sec.offsetHeight;
-        if (window.scrollY >= top && window.scrollY < bot) {
-            document.querySelectorAll('.nav-link').forEach(function(l) {
-                l.classList.remove('active');
-            });
-            var lnk = document.querySelector('.nav-link[href="#' + sec.id + '"]');
-            if (lnk) lnk.classList.add('active');
-        }
-    });
+    // Note: active nav link highlighting on scroll is handled by router.js
 });
 
-/*  SMOOTH SCROLL + MOBILE NAV CLOSE  */
+/*  SMOOTH SCROLL + MOBILE NAV CLOSE
+    Only for non-route anchor links. Route-based links are handled by router.js */
 document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    // Skip links that have data-route (handled by router.js)
+    if (a.hasAttribute('data-route')) return;
     a.addEventListener('click', function(e) {
         var href = this.getAttribute('href');
         if (href === '#') return;
